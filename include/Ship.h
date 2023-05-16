@@ -4,11 +4,13 @@
 class Ship {
   
   public:
+    // Coordinates of ship
     int x;
     int y;
     int health;
     int boostTimer;
 
+    // Constructor
     Ship();
     void move(int deltaX, int deltaY);
     void shoot();

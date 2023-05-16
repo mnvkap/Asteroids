@@ -6,9 +6,11 @@
 
 class Game {
   public:
+    // Window for game to be played in 
     sf::RenderWindow window;
 
     Game();
+    // Method to start Game
     void run();
     void stop(); 
 }

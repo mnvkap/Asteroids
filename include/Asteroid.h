@@ -4,6 +4,7 @@
 class Asteroid {
     
   public:
+    // Coordinates of Asteroid
     int x;
     int y;
 
