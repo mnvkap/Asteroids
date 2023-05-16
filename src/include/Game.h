@@ -6,6 +6,8 @@
 
 class Game {
   private: 
+    int const RESHEIGHT;
+    int const RESWIDTH;
     sf::RenderWindow window;
   public:
     Game();

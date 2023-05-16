@@ -5,9 +5,9 @@
 #define GAME_H
 
 class Game {
-  private: 
-    sf::RenderWindow window;
   public:
+    sf::RenderWindow window;
+
     Game();
     void run();
     void stop(); 

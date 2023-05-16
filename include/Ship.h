@@ -2,13 +2,13 @@
 #define SHIP_H
 
 class Ship {
-  private:
+  
+  public:
     int x;
     int y;
     int health;
     int boostTimer;
-  
-  public:
+
     Ship();
     void move(int deltaX, int deltaY);
     void shoot();

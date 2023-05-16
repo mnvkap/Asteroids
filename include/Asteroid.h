@@ -2,11 +2,11 @@
 #define ASTEROID_H
 
 class Asteroid {
-  private:
-    int x;
-    int y;
     
   public:
+    int x;
+    int y;
+
     Asteroid(int wave);
     void startMove();
     void kill();

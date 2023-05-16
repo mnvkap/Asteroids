@@ -2,10 +2,10 @@
 #define BULLET_H
 
 public Bullet {
-  private:
+  public:
     int x;
     int y;
-  public:
+
     Bullet();
     void startFire();
     void stopFire();
