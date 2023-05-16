@@ -5,17 +5,16 @@ class Ship {
   
   public:
     // Coordinates of ship
-    int x;
-    int y;
+    int xPos;
+    int yPos;
     int health;
     int boostTimer;
 
     // Constructor
-    Ship();
+    Ship(int centerX, int centerY);
     void move(int deltaX, int deltaY);
     void shoot();
     void takeDamage();
-    void getInfo();
     void boost();
 };
 #endif //SHIP_H

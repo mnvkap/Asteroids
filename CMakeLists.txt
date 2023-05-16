@@ -25,9 +25,11 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 # Move font files to build-unix/
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/font
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/fonts
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
+# Move texture files to build-unix/
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/textures
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Include all source code files to generate an executable
 add_executable(Asteroids ${SRC_FILES})
 

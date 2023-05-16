@@ -4,27 +4,44 @@ const float Game::RESHEIGHT = 1080;
 const float Game::RESWIDTH  = 1920;
 
 Game::Game() 
-: window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids") { 
-  setUpText();
+  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids") { 
+  setUp();
 }
 
-void Game::run() {
-  // Create rectangle to lay our text on 
-  sf::RectangleShape background(sf::Vector2f(RESWIDTH, RESHEIGHT));
-  background.setFillColor(sf::Color(64, 64, 64, 255));
+void Game::start() {
+  window.clear(); 
+
+  // Create our background
+  sf::Sprite background;
+  background.setTexture(starPattern);
+  background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
+  
   window.draw(background);
+  window.display();
+  while (window.isOpen()) {
+    sf::Event event;
+    while (window.pollEvent(event)){
+      if (event.type == sf::Event::Closed) { return; }
+    }
+  }
+}
+void Game::run() {
+  // Create our background
+  sf::Sprite background;
+  background.setTexture(starPattern);
+  background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
   for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
 
   bool visible = true; // Used to blink press any key
   sf::Clock clock; 
   float blinkInterval = 0.5f; 
 
-  window.display();
+  bool startGame = false; 
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) { return; }
-      else if (event.type == sf::Event::KeyPressed) { return; }
+      else if (event.type == sf::Event::KeyPressed) { startGame = true; }
     }
 
     if (clock.getElapsedTime().asSeconds() >= blinkInterval) {
@@ -38,14 +55,19 @@ void Game::run() {
       for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
       window.display();
       clock.restart(); // Restart the clock
+
+      if (startGame) { break; }
     }
   }
+
+  start();
 }
 
-void Game::setUpText() {
+void Game::setUp() {
   if (!asteroidFont.loadFromFile("font/nasalization-rg.otf")) { }
   if (!regularTextFont.loadFromFile("font/nocontinue.ttf")) { }
   if (!pressKeyFont.loadFromFile("font/astronboy.otf")) { }
+  if (starPattern.loadFromFile("textures/repeatStars.png")) { starPattern.setRepeated(true); }
 
   // Create text objects
   sf::Text* asteroidText = new sf::Text;
@@ -74,10 +96,10 @@ void Game::setUpText() {
   pressAnyKeyText->setPosition(RESWIDTH / 2.0f, RESHEIGHT - 100);
 
   // Set Direcions 
-  moveUpText->setString("'W' or 'UP ARROW' WILL MOVE THE SHIP UPWARDS");
-  moveDownText->setString("'S' or 'DOWN ARROW' WILL MOVE THE SHIP DOWNWARDS");
-  moveLeftText->setString("'A' or 'LEFT ARROW' WILL MOVE THE SHIP LEFT");
-  moveRightText->setString("'D' or 'RIGHT ARROW' WILL MOVE THE SHIP RIGHT");
+  moveUpText->setString("'W' or 'UP ARROW' MOVE THE SHIP UPWARDS");
+  moveDownText->setString("'S' or 'DOWN ARROW' MOVE THE SHIP DOWNWARDS");
+  moveLeftText->setString("'A' or 'LEFT ARROW' MOVE THE SHIP LEFT");
+  moveRightText->setString("'D' or 'RIGHT ARROW' MOVE THE SHIP RIGHT");
 
   // Create vector for managing text objects 
   text = {moveUpText, moveDownText, moveLeftText, moveRightText};

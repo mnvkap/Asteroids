@@ -17,8 +17,9 @@ class Game {
     sf::Font asteroidFont; 
     sf::Font regularTextFont;
     sf::Font pressKeyFont;
+    sf::Texture starPattern;
     std::vector<sf::Text*> text; // Vector to hold text
-    void setUpText(); // Used to create text objects
+    void setUp(); // Used to setup game
   public:
     static const float RESHEIGHT;
     static const float RESWIDTH;
