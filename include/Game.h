@@ -6,6 +6,9 @@
 
 class Game {
   public:
+    int const RESHEIGHT;
+    int const RESWIDTH;
+
     // Window for game to be played in 
     sf::RenderWindow window;
 
