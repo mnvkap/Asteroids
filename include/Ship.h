@@ -17,4 +17,5 @@ class Ship {
     void takeDamage();
     void getInfo();
     void boost();
-}
+};
+#endif //SHIP_H

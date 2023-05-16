@@ -24,6 +24,10 @@ file(GLOB_RECURSE SRC_FILES
         "${PROJECT_SOURCE_DIR}/src/*.cpp"
 )
 
+# Move font files to build-unix/
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/font
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 # Include all source code files to generate an executable
 add_executable(Asteroids ${SRC_FILES})
 

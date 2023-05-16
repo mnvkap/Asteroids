@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
-#include <"Ship.h">
+#include <Ship.h>
 
 #ifndef GAME_H
 #define GAME_H
@@ -14,26 +14,24 @@ class Game {
     // Game object
     Ship* ship;
 
-    // Sounds
-    sf::Sound fire;
-    sf::Sound boost;
-    sf::Sound kill;
-    sf::Sound damage;
-    sf::Sound lose;
+    // Vector to hold text
+    std::vector<sf::Text*> text; 
 
     int score;
     int wave;
 
-    // Constructor helper method
-    void setUpPopUp();
+    // Create font objects
+    sf::Font asteroidFont; 
+    sf::Font regularTextFont;
+    void setUpText();
   public:
     static const float RESHEIGHT;
     static const float RESWIDTH;
-
 
     Game();
     
     // Method to start Game
     void run();
     void stop(); 
-}
+};
+#endif //GAME_H
