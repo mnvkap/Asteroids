@@ -1,3 +1,5 @@
+#include "Bullet.h"
+
 #ifndef SHIP_H
 #define SHIP_H
 

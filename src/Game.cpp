@@ -1,10 +1,16 @@
 #include "Game.h"
+#include "Ship.h"
 
 const float Game::RESHEIGHT = 1080;
 const float Game::RESWIDTH  = 1920;
+const float FRICTION = 0.05f;    // Friction coefficent
+const float MAX_VELOCITY = 1.0f; // Maximum velocity for the Sprite
+const float ACCELERATION = 0.01f;
+const float ROTATION_SPEED = 0.1f;
 
 Game::Game() 
-  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids") { 
+  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"),
+    ship((int)RESWIDTH/2, (int)RESHEIGHT/2) { 
   setUp();
 }
 
@@ -12,23 +18,69 @@ void Game::start() {
   window.clear(); 
 
   // Create our background
-  sf::Sprite background;
-  background.setTexture(starPattern);
+  sf::Sprite background(starPattern);
   background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
-  
+  sf::Vector2f velocity(0.0f, 0.0f); 
+
+  // Create Ship Sprite
+  sf::Sprite ship(shipTexture);
+  ship.setScale(RESWIDTH * 0.1f / shipTexture.getSize().x, RESHEIGHT * 0.1f / shipTexture.getSize().y);
+  float shipWidth = ship.getLocalBounds().width;
+  float shipHeight = ship.getLocalBounds().height;
+  ship.setOrigin(shipWidth / 2, shipHeight / 2);
+  ship.setPosition(RESWIDTH / 2, RESHEIGHT / 2);
+
   window.draw(background);
+  window.draw(ship);
   window.display();
+
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)){
       if (event.type == sf::Event::Closed) { return; }
     }
+
+    velocity.x *= (1.0f - FRICTION); // Apply friction
+    velocity.y *= (1.0f - FRICTION);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+      velocity.x += ACCELERATION * cos((ship.getRotation() - 90) * M_PI / 180);
+      velocity.y += ACCELERATION * sin((ship.getRotation() - 90) * M_PI / 180);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+      velocity.x -= ACCELERATION * cos((ship.getRotation() - 90) * M_PI / 180);
+      velocity.y -= ACCELERATION * sin((ship.getRotation() - 90) * M_PI / 180);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+      ship.rotate(-ROTATION_SPEED);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+      ship.rotate(ROTATION_SPEED);
+    }
+
+    if (velocity.x > MAX_VELOCITY) { velocity.x = MAX_VELOCITY; }
+    else if (velocity.x < -MAX_VELOCITY) { velocity.x = -MAX_VELOCITY; }
+    if (velocity.y > MAX_VELOCITY) { velocity.y = MAX_VELOCITY; }
+    else if (velocity.y < -MAX_VELOCITY) { velocity.y = -MAX_VELOCITY; }
+
+    ship.move(velocity); // Update ship location 
+
+    // Wrap around screen edges
+    if (ship.getPosition().x < 0) { ship.setPosition(RESWIDTH, ship.getPosition().y); }
+    else if (ship.getPosition().x > RESWIDTH) { ship.setPosition(0, ship.getPosition().y); }
+    if (ship.getPosition().y < 0) { ship.setPosition(ship.getPosition().x, RESHEIGHT); }
+    else if (ship.getPosition().y > RESHEIGHT) { ship.setPosition(ship.getPosition().x, 0); }
+
+    window.clear();
+    window.draw(background);
+    window.draw(ship);
+    window.display();
   }
 }
+
 void Game::run() {
   // Create our background
-  sf::Sprite background;
-  background.setTexture(starPattern);
+  sf::Sprite background(starPattern);
   background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
   for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
 
@@ -64,10 +116,11 @@ void Game::run() {
 }
 
 void Game::setUp() {
-  if (!asteroidFont.loadFromFile("font/nasalization-rg.otf")) { }
-  if (!regularTextFont.loadFromFile("font/nocontinue.ttf")) { }
-  if (!pressKeyFont.loadFromFile("font/astronboy.otf")) { }
+  if (!asteroidFont.loadFromFile("fonts/nasalization-rg.otf")) { }
+  if (!regularTextFont.loadFromFile("fonts/nocontinue.ttf")) { }
+  if (!pressKeyFont.loadFromFile("fonts/astronboy.otf")) { }
   if (starPattern.loadFromFile("textures/repeatStars.png")) { starPattern.setRepeated(true); }
+  if (!shipTexture.loadFromFile("textures/ship.png")) { }
 
   // Create text objects
   sf::Text* asteroidText = new sf::Text;

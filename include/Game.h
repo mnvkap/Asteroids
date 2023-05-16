@@ -10,7 +10,7 @@ class Game {
   private:
     sf::RenderWindow window; // Window for game to be played in 
   
-    Ship* ship;
+    Ship ship;
     int score;
     int wave;
 
@@ -18,6 +18,7 @@ class Game {
     sf::Font regularTextFont;
     sf::Font pressKeyFont;
     sf::Texture starPattern;
+    sf::Texture shipTexture;
     std::vector<sf::Text*> text; // Vector to hold text
     void setUp(); // Used to setup game
   public:
