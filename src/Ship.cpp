@@ -4,7 +4,7 @@ Ship::Ship(int centerX, int centerY, Game& curGame)
   : health(99), boostTimer(5), xPos(centerX), yPos(centerY), game(curGame), shipSprite() {
   if (!shipTexture.loadFromFile("textures/ship.png")) { }
   shipSprite.setTexture(shipTexture);
-  shipSprite.setScale(Game::RESWIDTH * 0.1f / shipTexture.getSize().x, Game::RESHEIGHT * 0.1f / shipTexture.getSize().y);
+  shipSprite.setScale(Game::RESWIDTH * 0.07f / shipTexture.getSize().x, Game::RESHEIGHT * 0.07f / shipTexture.getSize().y);
 }
 
 void Ship::move(int deltaX, int deltaY) {

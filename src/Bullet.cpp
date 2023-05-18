@@ -6,7 +6,7 @@ Bullet::Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame)
   bulletSprite.setTexture(bulletTexture);
   bulletSprite.setOrigin(bulletTexture.getSize().x / 2.0f, bulletTexture.getSize().y / 2.0f);
   bulletSprite.setRotation(rotation);
-  bulletSprite.setScale(Game::RESWIDTH * 0.4f / bulletTexture.getSize().x, Game::RESHEIGHT * 0.4f / bulletTexture.getSize().y);
+  bulletSprite.setScale(Game::RESWIDTH * 0.01f / bulletTexture.getSize().x, Game::RESHEIGHT * 0.065f / bulletTexture.getSize().y);
   bulletSprite.setPosition(xPos, yPos);
   velocity = sf::Vector2f(cos((rotation - 90) * M_PI / 180) * 750.0f, sin((rotation - 90) * M_PI / 180) * 750.0f);
 }

@@ -8,18 +8,20 @@
 #define GAME_H
 
 class Bullet; // Forward Decleration of Bullet
+class Ship; // Forward Decleration of ship
 class Game {
   private:
-    sf::RenderWindow window; // Window for game to be played in 
-  
     int score;
     int wave;
+    Ship* ship;
 
     sf::Clock clock;
     sf::Font asteroidFont; 
-    sf::Font regularTextFont;
     sf::Font pressKeyFont;
-    sf::Texture starPattern;
+    sf::Sprite background;
+    sf::Sprite* shipSprite;
+    sf::Texture backgroundTexture;
+    sf::RenderWindow window; // Window for game to be played in 
     std::vector<sf::Text*> text; // Vector to hold text
     std::vector<Bullet*> liveBullets; // Vector to hold bullets
     void setUp(); // Used to setup game

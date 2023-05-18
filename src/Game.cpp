@@ -12,10 +12,9 @@ const float FRICTION = 0.1f;    // Friction coefficent
 const float MAX_VELOCITY = 1.5f; // Maximum velocity for the Sprite
 const float ACCELERATION = 0.01f;
 const float ROTATION_SPEED = 0.1f;
-Ship* ship;
 
 Game::Game() 
-  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"), clock() { 
+  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"), clock(), background() { 
   setUp();
 }
 
@@ -23,20 +22,8 @@ Game::Game()
 void Game::start() {
   window.clear(); 
 
-  // Instantiate Ship Object 
-  ship = new Ship(RESWIDTH/2, RESHEIGHT/2, *this);
   Bullet* newBullet = nullptr; // Created for shoot func
-  // Create our background
-  sf::Sprite background(starPattern);
-  background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
   sf::Vector2f velocity(0.0f, 0.0f); 
-
-  // Create Ship Sprite
-  sf::Sprite* shipSprite = &ship->shipSprite;
-  float shipSpriteWidth = shipSprite->getLocalBounds().width;
-  float shipSpriteHeight = shipSprite->getLocalBounds().height;
-  shipSprite->setOrigin(shipSpriteWidth / 2, shipSpriteHeight / 2);
-  shipSprite->setPosition(RESWIDTH / 2, RESHEIGHT / 2);
 
   window.draw(background);
   window.draw(*shipSprite);
@@ -107,8 +94,9 @@ void Game::start() {
 // This method will be called to initiate the game
 void Game::run() {
   // Create our background
-  sf::Sprite background(starPattern);
+  background = sf::Sprite(backgroundTexture);
   background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
+
   for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
 
   bool visible = true; // Used to blink press any key
@@ -131,6 +119,7 @@ void Game::run() {
       // Update screen
       window.clear(); 
       window.draw(background);
+      window.draw(*shipSprite);
       for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
       window.display();
       clock.restart(); // Restart the clock
@@ -145,9 +134,8 @@ void Game::run() {
 // This method is used to set up the title screen, and set textures/fonts for gameplay
 void Game::setUp() {
   if (!asteroidFont.loadFromFile("fonts/nasalization-rg.otf")) { }
-  if (!regularTextFont.loadFromFile("fonts/nocontinue.ttf")) { }
   if (!pressKeyFont.loadFromFile("fonts/astronboy.otf")) { }
-  if (starPattern.loadFromFile("textures/repeatStars.png")) { starPattern.setRepeated(true); }
+  if (backgroundTexture.loadFromFile("textures/background.png")) { backgroundTexture.setRepeated(true); }
 
   // Create text objects
   sf::Text* asteroidText = new sf::Text;
@@ -170,6 +158,14 @@ void Game::setUp() {
   sf::FloatRect pressAnyKeyTextBounds = pressAnyKeyText->getLocalBounds(); // Used to calculate placement of text
   pressAnyKeyText->setOrigin(pressAnyKeyTextBounds.left + pressAnyKeyTextBounds.width / 2.0f, pressAnyKeyTextBounds.top + pressAnyKeyTextBounds.height / 2.0f); // Set the origin to the center of the text
   pressAnyKeyText->setPosition(RESWIDTH / 2.0f, RESHEIGHT - 100);
+
+  // Create Ship 
+  ship = new Ship(RESWIDTH/2, RESHEIGHT/2, *this);
+  shipSprite = &ship->shipSprite; 
+  float shipSpriteWidth = shipSprite->getLocalBounds().width;
+  float shipSpriteHeight = shipSprite->getLocalBounds().height;
+  shipSprite->setOrigin(shipSpriteWidth / 2, shipSpriteHeight / 2);
+  shipSprite->setPosition(RESWIDTH / 2, RESHEIGHT / 2);
 
   text.push_back(asteroidText);
   text.push_back(pressAnyKeyText);
