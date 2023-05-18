@@ -35,6 +35,6 @@ class Game {
     void start();
     void stop(); 
 
-    void fireBullet(Bullet* bullet); 
+    void cleanLiveBullets(); 
 };
 #endif //GAME_H

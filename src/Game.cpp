@@ -75,35 +75,31 @@ void Game::start() {
     window.clear();
     window.draw(background);
     window.draw(*shipSprite);
-
     for (Bullet* bullet : liveBullets) { window.draw(bullet->bulletSprite); }
 
     window.display();
 
     // Clean up liveBullets
-    for (auto it = liveBullets.begin(); it != liveBullets.end(); /* no increment here */) {
-        if (!(*it)->live) {
-            delete *it; // delete the Bullet object
-            it = liveBullets.erase(it); // erase returns the new iterator
-        } else {
-            ++it; // only increment if we didn't erase
-        }
-    }
+    cleanLiveBullets();
   }
 }
+
+// This method keeps our live bullets vector clean of unalive bullets
+void Game::cleanLiveBullets() {
+  for (auto it = liveBullets.begin(); it != liveBullets.end(); /* no increment here */) {
+      if (!(*it)->live) {
+          delete *it; // delete the Bullet object
+          it = liveBullets.erase(it); // erase returns the new iterator
+      } else { ++it; /* only increment if we didn't erase */ }
+  }
+}
+
 // This method will be called to initiate the game
 void Game::run() {
-  // Create our background
-  background = sf::Sprite(backgroundTexture);
-  background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
-
-  for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
-
+  bool startGame = false; 
   bool visible = true; // Used to blink press any key
-  sf::Clock clock; 
   float blinkInterval = 0.5f; 
 
-  bool startGame = false; 
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -111,9 +107,9 @@ void Game::run() {
       else if (event.type == sf::Event::KeyPressed) { startGame = true; }
     }
 
-    if (clock.getElapsedTime().asSeconds() >= blinkInterval) {
-      visible = !visible;
-      if (visible) { text.back()->setFillColor(sf::Color(255, 255, 255, 0)); }
+    if (clock.getElapsedTime().asSeconds() >= blinkInterval) { // Check if we should blink text
+      visible = !visible; 
+      if (visible) { text.back()->setFillColor(sf::Color(255, 255, 255, 0)); } 
       else { text.back()->setFillColor(sf::Color(255, 255, 255, 255)); }
 
       // Update screen
@@ -127,7 +123,6 @@ void Game::run() {
       if (startGame) { break; }
     }
   }
-
   start();
 }
 
@@ -159,6 +154,14 @@ void Game::setUp() {
   pressAnyKeyText->setOrigin(pressAnyKeyTextBounds.left + pressAnyKeyTextBounds.width / 2.0f, pressAnyKeyTextBounds.top + pressAnyKeyTextBounds.height / 2.0f); // Set the origin to the center of the text
   pressAnyKeyText->setPosition(RESWIDTH / 2.0f, RESHEIGHT - 100);
 
+  // Store fonts in vector 
+  text.push_back(asteroidText);
+  text.push_back(pressAnyKeyText);
+
+  // Create our background
+  background = sf::Sprite(backgroundTexture);
+  background.setTextureRect(sf::IntRect(0, 0, RESWIDTH, RESHEIGHT));
+
   // Create Ship 
   ship = new Ship(RESWIDTH/2, RESHEIGHT/2, *this);
   shipSprite = &ship->shipSprite; 
@@ -166,7 +169,4 @@ void Game::setUp() {
   float shipSpriteHeight = shipSprite->getLocalBounds().height;
   shipSprite->setOrigin(shipSpriteWidth / 2, shipSpriteHeight / 2);
   shipSprite->setPosition(RESWIDTH / 2, RESHEIGHT / 2);
-
-  text.push_back(asteroidText);
-  text.push_back(pressAnyKeyText);
 }
