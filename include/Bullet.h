@@ -7,7 +7,7 @@
 class Bullet {
   private:
     sf::Texture bulletTexture;
-
+    sf::Vector2f velocity;
   public:
     // Coordinates of Bullet 
     int xPos;

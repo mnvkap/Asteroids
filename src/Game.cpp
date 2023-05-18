@@ -77,6 +77,7 @@ void Game::start() {
 
     shipSprite->move(velocity); // Update ship location 
     for (Bullet* bullet : liveBullets) { bullet->fire(clock); }
+    clock.restart(); // Reset clock 
 
     // Wrap around screen edges
     if (shipSprite->getPosition().x < 0) { shipSprite->setPosition(RESWIDTH, shipSprite->getPosition().y); }
@@ -93,11 +94,14 @@ void Game::start() {
     window.display();
 
     // Clean up liveBullets
-    liveBullets.erase(
-      std::remove_if(liveBullets.begin(), liveBullets.end(), [](const Bullet* bullet) {
-          return !bullet->live;
-      }),
-      liveBullets.end());
+    for (auto it = liveBullets.begin(); it != liveBullets.end(); /* no increment here */) {
+        if (!(*it)->live) {
+            delete *it; // delete the Bullet object
+            it = liveBullets.erase(it); // erase returns the new iterator
+        } else {
+            ++it; // only increment if we didn't erase
+        }
+    }
   }
 }
 // This method will be called to initiate the game

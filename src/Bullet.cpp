@@ -1,16 +1,18 @@
 #include <Bullet.h>
 
 Bullet::Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame)
-  : live(true), xPos(deltaX), yPos(deltaY), rotation(shipRotation), game(curGame), bulletTexture(), bulletSprite() {
+  : live(true), xPos(deltaX), yPos(deltaY), rotation(shipRotation), game(curGame), bulletTexture(), bulletSprite(), velocity() {
   if (!bulletTexture.loadFromFile("textures/bullet.png")) { }
   bulletSprite.setTexture(bulletTexture);
   bulletSprite.setOrigin(bulletTexture.getSize().x / 2.0f, bulletTexture.getSize().y / 2.0f);
+  bulletSprite.setRotation(rotation);
+  bulletSprite.setScale(Game::RESWIDTH * 0.4f / bulletTexture.getSize().x, Game::RESHEIGHT * 0.4f / bulletTexture.getSize().y);
   bulletSprite.setPosition(xPos, yPos);
+  velocity = sf::Vector2f(cos((rotation - 90) * M_PI / 180) * 750.0f, sin((rotation - 90) * M_PI / 180) * 750.0f);
 }
 
 void Bullet::fire(sf::Clock& clock) {
-  sf::Vector2f velocity(cos((bulletSprite.getRotation() - 90) * M_PI / 180) * 500.0f, sin((bulletSprite.getRotation() - 90) * M_PI / 180) * 500.0f); // Set bullet speed and direciton
-  float deltaTime = clock.restart().asSeconds(); // Get time since last frame
+  float deltaTime = clock.getElapsedTime().asSeconds(); // Get time since last frame
   bulletSprite.move(velocity * deltaTime); // Move sprite 
 
   // Check for wall collison 
