@@ -2,15 +2,20 @@
 #define ASTEROID_H
 
 class Asteroid {
-    
+  private:
+    sf::Texture asteroidTexture;
+    sf::Vector2f velocity;
   public:
     // Coordinates of Asteroid
-    int x;
-    int y;
+    int xPos;
+    int yPos;
+    int size;
+    float rotation;
+    bool live; // Tracks state of asteroid
 
-    Asteroid(int wave);
-    void startMove();
-    void kill();
-    
+    sf::Sprite asteroidSprite; 
+
+    Asteroid(int x, int y);
+    void startMove(float deltaTime);
 }
 #endif //ASTEROID_H

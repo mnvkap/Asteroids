@@ -30,8 +30,11 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/fonts
 # Move texture files to build-unix/
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/textures
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Move sound files to build-unix/
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/include/sounds
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Include all source code files to generate an executable
 add_executable(Asteroids ${SRC_FILES})
 
 # Link SFML libraries to the executable
-target_link_libraries(Asteroids sfml-graphics sfml-window sfml-system)
+target_link_libraries(Asteroids sfml-graphics sfml-window sfml-audio sfml-system)

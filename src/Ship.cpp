@@ -10,6 +10,10 @@ Ship::Ship(int centerX, int centerY, Game& curGame)
   shipSprite.setOrigin(shipTexture.getSize().x / 2.0f, shipTexture.getSize().y / 2.0f);
   shipSprite.setScale(Game::RESWIDTH * 0.07f / shipTexture.getSize().x, Game::RESHEIGHT * 0.07f / shipTexture.getSize().y);
   shipSprite.setPosition(Game::RESWIDTH / 2, Game::RESHEIGHT / 2);
+
+  // Load sound 
+  if (!fireBuffer.loadFromFile("sounds/fire.ogg")) { }
+  fireSound = sf::Sound(fireBuffer);
 }
 
 void Ship::handleInput(float deltaTime) {
@@ -51,6 +55,10 @@ Bullet* Ship::shoot() {
   float offsetX = shipSpriteWidth / 2.0f * cos((shipRotation - 90) * M_PI / 180);
   float offsetY = shipSpriteHeight / 2.0f * sin((shipRotation - 90) * M_PI / 180);
   Bullet* bullet = new Bullet(shipPos.x, shipPos.y, shipRotation, game);
+
+  // Play sound effect
+  fireSound.play();
+
   return bullet;
 }
 

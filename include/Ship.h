@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "Game.h"
+#include <SFML/Audio.hpp>
 
 #ifndef SHIP_H
 #define SHIP_H
@@ -16,6 +17,8 @@ class Ship {
 
     float getMagnitude(sf::Vector2f vector);
     sf::Vector2f normalize(sf::Vector2f vector);
+    sf::SoundBuffer fireBuffer;
+    sf::Sound fireSound;
   public:
     // Coordinates of ship
     int xPos;
