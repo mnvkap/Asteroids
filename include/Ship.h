@@ -7,8 +7,12 @@
 
 class Ship {
   private:
+    sf::Texture thrusterTexture;
+    sf::Sprite thrusterSprite;
     sf::Texture shipTexture;
     sf::Vector2f velocity{0.0f, 0.0f};  // Declare velocity here
+    
+    bool showThruster; 
     float rotation = 0.0f;  // Declare rotation here
     const float ACCELERATION = 800.0f;
     const float MAX_SPEED = 400.0f;
@@ -18,6 +22,8 @@ class Ship {
     float getMagnitude(sf::Vector2f vector);
     sf::Vector2f normalize(sf::Vector2f vector);
     sf::SoundBuffer fireBuffer;
+    sf::SoundBuffer shipEngineBuffer;
+    sf::Sound shipEngineSound;
     sf::Sound fireSound;
   public:
     // Coordinates of ship
@@ -34,14 +40,8 @@ class Ship {
     void handleInput(float deltaTime);
     void applyDrag(float deltaTime);
     void wrapAroundScreen();
-    void update(float deltaTime) {
-      handleInput(deltaTime);
-      applyDrag(deltaTime);
-      wrapAroundScreen();
-      shipSprite.move(velocity * deltaTime);
-      shipSprite.setRotation(rotation);
-    }
-    void draw(sf::RenderWindow& window) { window.draw(shipSprite); };
+    void update(float deltaTime);
+    void draw(sf::RenderWindow& window);
     Bullet* shoot(); // Returns Bullet it fires
     void takeDamage();
     void boost();
