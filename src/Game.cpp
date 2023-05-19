@@ -2,12 +2,6 @@
 #include "Ship.h"
 #include "Bullet.h"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-const float Game::RESHEIGHT = 1080;
-const float Game::RESWIDTH  = 1920;
 
 Game::Game() 
   : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"), clock(), background() { 
@@ -20,20 +14,18 @@ void Game::start() {
   window.draw(background);
   window.display();
 
-  Bullet* newBullet = nullptr; // Created for shoot func
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)){
       if (event.type == sf::Event::Closed) { return; }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-        newBullet = ship->shoot(); 
+        Bullet newBullet = ship->shoot(); 
         liveBullets.push_back(newBullet); 
       }
     }
 
     float deltaTime = clock.restart().asSeconds(); // Restart and get elapsed time
     for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); }
-    clock.restart(); // Reset clock 
 
     ship->update(deltaTime);
     window.clear();
@@ -70,7 +62,7 @@ void Game::run() {
       else if (event.type == sf::Event::KeyPressed) { startGame = true; }
     }
 
-    if (clock.getElapsedTime().asSeconds() >= blinkInterval) { // Check if we should blink text
+    if (clock.restart().asSeconds() >= blinkInterval) { // Check if we should blink text
       visible = !visible; 
       if (visible) { text.back()->setFillColor(sf::Color(255, 255, 255, 0)); } 
       else { text.back()->setFillColor(sf::Color(255, 255, 255, 255)); }
@@ -78,10 +70,9 @@ void Game::run() {
       // Update screen
       window.clear(); 
       window.draw(background);
-      window.draw(*shipSprite);
+      ship->draw(window);
       for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
       window.display();
-      clock.restart(); // Restart the clock
 
       if (startGame) { break; }
     }
@@ -127,5 +118,4 @@ void Game::setUp() {
 
   // Create Ship 
   ship = new Ship(RESWIDTH/2, RESHEIGHT/2, *this);
-  shipSprite = &ship->shipSprite; 
 }

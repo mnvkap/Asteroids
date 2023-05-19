@@ -26,8 +26,8 @@ class Game {
     std::vector<Bullet*> liveBullets; // Vector to hold bullets
     void setUp(); // Used to setup game
   public:
-    static const float RESHEIGHT;
-    static const float RESWIDTH;
+    static constexpr float RESHEIGHT = 1080;
+    static constexpr float RESWIDTH  = 1920;
 
     Game();
     
