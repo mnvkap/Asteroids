@@ -19,7 +19,7 @@ void Game::start() {
     while (window.pollEvent(event)){
       if (event.type == sf::Event::Closed) { return; }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-        Bullet newBullet = ship->shoot(); 
+        Bullet* newBullet = ship->shoot(); 
         liveBullets.push_back(newBullet); 
       }
     }
@@ -62,7 +62,7 @@ void Game::run() {
       else if (event.type == sf::Event::KeyPressed) { startGame = true; }
     }
 
-    if (clock.restart().asSeconds() >= blinkInterval) { // Check if we should blink text
+    if (clock.getElapsedTime().asSeconds() >= blinkInterval) { // Check if we should blink text
       visible = !visible; 
       if (visible) { text.back()->setFillColor(sf::Color(255, 255, 255, 0)); } 
       else { text.back()->setFillColor(sf::Color(255, 255, 255, 255)); }
@@ -73,6 +73,7 @@ void Game::run() {
       ship->draw(window);
       for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
       window.display();
+      clock.restart(); // Restart the clock
 
       if (startGame) { break; }
     }
