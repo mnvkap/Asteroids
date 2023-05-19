@@ -8,10 +8,6 @@
 
 const float Game::RESHEIGHT = 1080;
 const float Game::RESWIDTH  = 1920;
-const float FRICTION = 0.1f;    // Friction coefficent
-const float MAX_VELOCITY = 1.5f; // Maximum velocity for the Sprite
-const float ACCELERATION = 0.01f;
-const float ROTATION_SPEED = 0.1f;
 
 Game::Game() 
   : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"), clock(), background() { 
@@ -21,14 +17,10 @@ Game::Game()
 // This method contains the game loop
 void Game::start() {
   window.clear(); 
-
-  Bullet* newBullet = nullptr; // Created for shoot func
-  sf::Vector2f velocity(0.0f, 0.0f); 
-
   window.draw(background);
-  window.draw(*shipSprite);
   window.display();
 
+  Bullet* newBullet = nullptr; // Created for shoot func
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)){
@@ -39,44 +31,15 @@ void Game::start() {
       }
     }
 
-    velocity.x *= (1.0f - FRICTION); // Apply friction
-    velocity.y *= (1.0f - FRICTION);
-
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ) {
-      velocity.x += ACCELERATION * cos((shipSprite->getRotation() - 90) * M_PI / 180);
-      velocity.y += ACCELERATION * sin((shipSprite->getRotation() - 90) * M_PI / 180);
-    }
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ) {
-      velocity.x -= ACCELERATION * cos((shipSprite->getRotation() - 90) * M_PI / 180);
-      velocity.y -= ACCELERATION * sin((shipSprite->getRotation() - 90) * M_PI / 180);
-    }
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ) {
-      shipSprite->rotate(-ROTATION_SPEED);
-    }
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ) {
-      shipSprite->rotate(ROTATION_SPEED);
-    }
-
-    if (velocity.x > MAX_VELOCITY) { velocity.x = MAX_VELOCITY; }
-    else if (velocity.x < -MAX_VELOCITY) { velocity.x = -MAX_VELOCITY; }
-    if (velocity.y > MAX_VELOCITY) { velocity.y = MAX_VELOCITY; }
-    else if (velocity.y < -MAX_VELOCITY) { velocity.y = -MAX_VELOCITY; }
-
-    shipSprite->move(velocity); // Update ship location 
-    for (Bullet* bullet : liveBullets) { bullet->fire(clock); }
+    float deltaTime = clock.restart().asSeconds(); // Restart and get elapsed time
+    for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); }
     clock.restart(); // Reset clock 
 
-    // Wrap around screen edges
-    if (shipSprite->getPosition().x < 0) { shipSprite->setPosition(RESWIDTH, shipSprite->getPosition().y); }
-    else if (shipSprite->getPosition().x > RESWIDTH) { shipSprite->setPosition(0, shipSprite->getPosition().y); }
-    if (shipSprite->getPosition().y < 0) { shipSprite->setPosition(shipSprite->getPosition().x, RESHEIGHT); }
-    else if (shipSprite->getPosition().y > RESHEIGHT) { shipSprite->setPosition(shipSprite->getPosition().x, 0); }
-
+    ship->update(deltaTime);
     window.clear();
     window.draw(background);
-    window.draw(*shipSprite);
+    ship->draw(window);
     for (Bullet* bullet : liveBullets) { window.draw(bullet->bulletSprite); }
-
     window.display();
 
     // Clean up liveBullets
@@ -165,8 +128,4 @@ void Game::setUp() {
   // Create Ship 
   ship = new Ship(RESWIDTH/2, RESHEIGHT/2, *this);
   shipSprite = &ship->shipSprite; 
-  float shipSpriteWidth = shipSprite->getLocalBounds().width;
-  float shipSpriteHeight = shipSprite->getLocalBounds().height;
-  shipSprite->setOrigin(shipSpriteWidth / 2, shipSpriteHeight / 2);
-  shipSprite->setPosition(RESWIDTH / 2, RESHEIGHT / 2);
 }

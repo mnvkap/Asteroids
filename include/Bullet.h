@@ -19,6 +19,6 @@ class Bullet {
 
     Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame);
     // Start the movement of the bullet
-    void fire(sf::Clock& clock);
+    void fire(float deltaTime);
 };
 #endif //BULLET_H

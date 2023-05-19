@@ -11,8 +11,7 @@ Bullet::Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame)
   velocity = sf::Vector2f(cos((rotation - 90) * M_PI / 180) * 750.0f, sin((rotation - 90) * M_PI / 180) * 750.0f);
 }
 
-void Bullet::fire(sf::Clock& clock) {
-  float deltaTime = clock.getElapsedTime().asSeconds(); // Get time since last frame
+void Bullet::fire(float deltaTime) {
   bulletSprite.move(velocity * deltaTime); // Move sprite 
 
   // Check for wall collison 
@@ -21,4 +20,3 @@ void Bullet::fire(sf::Clock& clock) {
   if (bulletPos.x < 0 || bulletPos.x + bulletSpriteBounds.width > game.RESWIDTH) { live = false; }
   if (bulletPos.y < 0 || bulletPos.y + bulletSpriteBounds.height > game.RESHEIGHT) { live = false; }
 }
-

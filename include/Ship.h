@@ -7,7 +7,15 @@
 class Ship {
   private:
     sf::Texture shipTexture;
+    sf::Vector2f velocity{0.0f, 0.0f};  // Declare velocity here
+    float rotation = 0.0f;  // Declare rotation here
+    const float ACCELERATION = 800.0f;
+    const float MAX_SPEED = 400.0f;
+    const float ROTATION_SPEED = 200.0f;
+    const float DRAG = 0.85f;
 
+    float getMagnitude(sf::Vector2f vector);
+    sf::Vector2f normalize(sf::Vector2f vector);
   public:
     // Coordinates of ship
     int xPos;
@@ -19,7 +27,18 @@ class Ship {
 
     // Constructor
     Ship(int centerX, int centerY, Game& curGame);
-    void move(int deltaX, int deltaY);
+    // Move sprite on screen
+    void handleInput(float deltaTime);
+    void applyDrag(float deltaTime);
+    void wrapAroundScreen();
+    void update(float deltaTime) {
+      handleInput(deltaTime);
+      applyDrag(deltaTime);
+      wrapAroundScreen();
+      shipSprite.move(velocity * deltaTime);
+      shipSprite.setRotation(rotation);
+    }
+    void draw(sf::RenderWindow& window) { window.draw(shipSprite); };
     Bullet* shoot(); // Returns Bullet it fires
     void takeDamage();
     void boost();
