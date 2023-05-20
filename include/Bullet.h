@@ -1,5 +1,4 @@
 #include <Game.h>
-#include <SFML/Graphics.hpp>
 
 #ifndef BULLET_H
 #define BULLET_H

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Ship.h"
 #include "Bullet.h"
+#include "Asteroid.h"
 
 
 Game::Game() 
@@ -10,6 +11,8 @@ Game::Game()
 
 // This method contains the game loop
 void Game::start() {
+
+  for (int i = 0; i < 10; i++) { asteroids.push_back(new Asteroid()); }
   window.clear(); 
   window.draw(background);
   window.display();
@@ -23,7 +26,6 @@ void Game::start() {
         liveBullets.push_back(newBullet); 
       }
     }
-
     float deltaTime = clock.restart().asSeconds(); // Restart and get elapsed time
     for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); }
 
@@ -31,6 +33,12 @@ void Game::start() {
     window.clear();
     window.draw(background);
     ship->draw(window);
+    // Update and draw each asteroid
+    for (Asteroid* asteroid : asteroids) {
+        asteroid->update();
+        window.draw(asteroid->asteroidSprite); // Draws the asteroid using the sprite
+    }
+
     for (Bullet* bullet : liveBullets) { window.draw(bullet->bulletSprite); }
     window.display();
 
