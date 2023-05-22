@@ -21,13 +21,16 @@ void Bullet::fire(float deltaTime) {
   if (bulletPos.y < 0 || bulletPos.y + bulletSpriteBounds.height > game.RESHEIGHT) { live = false; }
 }
 
-void Bullet::checkCollision(std::vector<Asteroid*> liveAsteroids) { 
+void Bullet::checkCollision(std::vector<Asteroid*>& liveAsteroids) {
   sf::FloatRect bulletBounds = bulletSprite.getGlobalBounds();
+  std::vector<Asteroid*> newAsteroids;
   for (Asteroid* asteroid : liveAsteroids) {
     sf::FloatRect asteroidBounds = asteroid->asteroidSprite.getGlobalBounds();
     if (bulletBounds.intersects(asteroidBounds)) {
-      live = false;
-      asteroid->live = false; 
+      live = false; // Kill the bullet
+      std::vector<Asteroid*> brokenAsteroids = Asteroid::breakApart(asteroid);
+      if (!brokenAsteroids.empty()) { newAsteroids.push_back(brokenAsteroids.at(0)); newAsteroids.push_back(brokenAsteroids.at(1)); }
     }
   }
+  liveAsteroids.insert(liveAsteroids.end(), newAsteroids.begin(), newAsteroids.end());
 }

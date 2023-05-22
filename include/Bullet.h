@@ -18,6 +18,6 @@ class Bullet {
 
     Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame);
     void fire(float deltaTime);
-    void checkCollision(std::vector<Asteroid*> liveAsteroids);
+    void checkCollision(std::vector<Asteroid*>& liveAsteroids);
 };
 #endif //BULLET_H

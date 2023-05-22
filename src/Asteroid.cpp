@@ -2,13 +2,33 @@
 int RESWIDTH = static_cast<int>(Game::RESWIDTH);
 int RESHEIGHT = static_cast<int>(Game::RESHEIGHT);
 
-Asteroid::Asteroid() 
-  : live(true) {
+Asteroid::Asteroid(int size) 
+  : live(true), size(size) {
   setPositionAndVelocity();
+  
+  switch(size) {
+    case 4:
+      if (!asteroidTexture.loadFromFile("textures/Asteroid4.png")) { }
+      asteroidSprite.setTexture(asteroidTexture);
+      asteroidSprite.setScale(Game::RESWIDTH * 0.2f / asteroidTexture.getSize().x, Game::RESHEIGHT * 0.2f / asteroidTexture.getSize().y);
+      break;
+    case 3:
+      if (!asteroidTexture.loadFromFile("textures/Asteroid3.png")) { }
+      asteroidSprite.setTexture(asteroidTexture);
+      asteroidSprite.setScale(Game::RESWIDTH * 0.15f / asteroidTexture.getSize().x, Game::RESHEIGHT * 0.15f / asteroidTexture.getSize().y);
+      break;
+    case 2:
+      if (!asteroidTexture.loadFromFile("textures/Asteroid2.png")) { }
+      asteroidSprite.setTexture(asteroidTexture);
+      asteroidSprite.setScale(Game::RESWIDTH * 0.1f / asteroidTexture.getSize().x, Game::RESHEIGHT * 0.1f / asteroidTexture.getSize().y);
+      break;
+    case 1:
+      if (!asteroidTexture.loadFromFile("textures/Asteroid1.png")) { }
+      asteroidSprite.setTexture(asteroidTexture);
+      asteroidSprite.setScale(Game::RESWIDTH * 0.05f / asteroidTexture.getSize().x, Game::RESHEIGHT * 0.05f / asteroidTexture.getSize().y);
+      break;
+  }
 
-  if (!asteroidTexture.loadFromFile("textures/BigAsteroid.png")) { }
-  asteroidSprite.setTexture(asteroidTexture);
-  asteroidSprite.setScale(Game::RESWIDTH * 0.2f / asteroidTexture.getSize().x, Game::RESHEIGHT * 0.2f / asteroidTexture.getSize().y);
   asteroidSprite.setPosition(xPos, yPos);
 }
 
@@ -64,4 +84,29 @@ void Asteroid::update() {
   else if (yPos > Game::RESHEIGHT) { yPos = -spriteHeight; }
 
   asteroidSprite.setPosition(xPos, yPos);
+}
+
+std::vector<Asteroid*> Asteroid::breakApart(Asteroid* asteroid) {
+  std::vector<Asteroid*> newAsteroids;
+  if (asteroid->size == 1) { asteroid->live = false; return newAsteroids; } 
+
+  float spriteWidth = asteroid->asteroidSprite.getGlobalBounds().width;
+  float spriteHeight = asteroid->asteroidSprite.getGlobalBounds().height;
+
+  Asteroid* newAsteroidOne = new Asteroid(asteroid->size - 1);
+  newAsteroidOne->xPos = asteroid->xPos + (spriteWidth / 2);  
+  newAsteroidOne->yPos = asteroid->yPos + (spriteHeight / 2); 
+  newAsteroidOne->dx = asteroid->dx * 2.5;
+  newAsteroidOne->dy = asteroid->dy * 1.5; 
+
+  Asteroid* newAsteroidTwo = new Asteroid(asteroid->size - 1);
+  newAsteroidTwo->xPos = asteroid->xPos - (spriteWidth / 2); 
+  newAsteroidTwo->yPos = asteroid->yPos - (spriteHeight / 2); 
+  newAsteroidTwo->dx = asteroid->dx * 1.5;
+  newAsteroidTwo->dy = asteroid->dy * 2.5; 
+
+  asteroid->live = false; // Kill parent asteroid
+  newAsteroids.push_back(newAsteroidOne);
+  newAsteroids.push_back(newAsteroidTwo);
+  return newAsteroids; 
 }

@@ -14,7 +14,8 @@ void Game::start() {
   window.clear(); 
   window.draw(background);
   window.display();
-
+  
+  sf::Clock spawnClock;
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)){
@@ -33,7 +34,7 @@ void Game::start() {
     ship->draw(window);
 
     if (liveAsteroids.empty()) {
-      for (int i = 0; i < 6; i++) { liveAsteroids.push_back(new Asteroid()); }
+      for (int i = 0; i < 5; i++) { liveAsteroids.push_back(new Asteroid(4)); }
     }
 
     for (Asteroid* asteroid : liveAsteroids) { // Update and draw each asteroid
