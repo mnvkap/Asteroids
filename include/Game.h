@@ -25,7 +25,7 @@ class Game {
     sf::RenderWindow window; // Window for game to be played in 
     std::vector<sf::Text*> text; // Vector to hold text
     std::vector<Bullet*> liveBullets; // Vector to hold bullets
-    std::vector<Asteroid*> asteroids; // Vector to hold asteroids
+    std::vector<Asteroid*> liveAsteroids; // Vector to hold asteroids
     void setUp(); // Used to setup game
   public:
     static constexpr float RESHEIGHT = 1080;

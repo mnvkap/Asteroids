@@ -9,8 +9,7 @@ class Asteroid {
     float xPos, yPos;
     float dx, dy;
     sf::Texture asteroidTexture;
-    sf::Vector2f velocity;
-    sf::Vector2f position;
+    sf::FloatRect bounds;
 
   public:
     int size;
@@ -18,6 +17,7 @@ class Asteroid {
     sf::Sprite asteroidSprite; 
 
     Asteroid();
+    void setPositionAndVelocity();
     void update();
 };
 #endif //ASTEROID_H

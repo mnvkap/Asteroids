@@ -12,7 +12,11 @@ Game::Game()
 // This method contains the game loop
 void Game::start() {
 
-  for (int i = 0; i < 10; i++) { asteroids.push_back(new Asteroid()); }
+  liveAsteroids.push_back(new Asteroid()); 
+  liveAsteroids.push_back(new Asteroid()); 
+  liveAsteroids.push_back(new Asteroid()); 
+  liveAsteroids.push_back(new Asteroid()); 
+
   window.clear(); 
   window.draw(background);
   window.display();
@@ -33,8 +37,7 @@ void Game::start() {
     window.clear();
     window.draw(background);
     ship->draw(window);
-    // Update and draw each asteroid
-    for (Asteroid* asteroid : asteroids) {
+    for (Asteroid* asteroid : liveAsteroids) { // Update and draw each asteroid
         asteroid->update();
         window.draw(asteroid->asteroidSprite); // Draws the asteroid using the sprite
     }
