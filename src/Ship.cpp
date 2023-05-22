@@ -70,11 +70,15 @@ void Ship::handleInput(float deltaTime) {
 void Ship::applyDrag(float deltaTime) { velocity *= std::powf(DRAG, deltaTime); }
 
 void Ship::wrapAroundScreen() {
-  if (shipSprite.getPosition().x < 0) { shipSprite.setPosition(Game::RESWIDTH, shipSprite.getPosition().y); }
-  else if (shipSprite.getPosition().x > Game::RESWIDTH) { shipSprite.setPosition(0, shipSprite.getPosition().y); }
+  // get the width and height of the sprite
+  float spriteWidth = shipSprite.getGlobalBounds().width;
+  float spriteHeight = shipSprite.getGlobalBounds().height;
 
-  if (shipSprite.getPosition().y < 0) { shipSprite.setPosition(shipSprite.getPosition().x, Game::RESHEIGHT); }
-  else if (shipSprite.getPosition().y > Game::RESHEIGHT) { shipSprite.setPosition(shipSprite.getPosition().x, 0); }
+  if (shipSprite.getPosition().x < -spriteWidth) { shipSprite.setPosition(Game::RESWIDTH, shipSprite.getPosition().y); }
+  else if (shipSprite.getPosition().x > Game::RESWIDTH) { shipSprite.setPosition(-spriteWidth, shipSprite.getPosition().y); }
+
+  if (shipSprite.getPosition().y < -spriteHeight) { shipSprite.setPosition(shipSprite.getPosition().x, Game::RESHEIGHT); }
+  else if (shipSprite.getPosition().y > Game::RESHEIGHT) { shipSprite.setPosition(shipSprite.getPosition().x, -spriteHeight); }
 }
 
 float Ship::getMagnitude(sf::Vector2f vector) { return std::sqrt(vector.x * vector.x + vector.y * vector.y); }
