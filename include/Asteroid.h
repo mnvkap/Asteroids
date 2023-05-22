@@ -12,7 +12,7 @@ class Asteroid {
 
   public:
     int size;
-    bool live; // Tracks state of asteroid
+    bool live; 
     sf::Sprite asteroidSprite; 
 
     Asteroid();

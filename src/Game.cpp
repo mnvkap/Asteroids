@@ -25,7 +25,7 @@ void Game::start() {
       }
     }
     float deltaTime = clock.restart().asSeconds(); // Restart and get elapsed time
-    for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); }
+    for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); bullet->checkCollision(liveAsteroids); }
 
     ship->update(deltaTime);
     window.clear();
@@ -45,16 +45,22 @@ void Game::start() {
     window.display();
 
     // Clean up liveBullets
-    cleanLiveBullets();
+    cleanEntities();
   }
 }
 
-// This method keeps our live bullets vector clean of unalive bullets
-void Game::cleanLiveBullets() {
+void Game::cleanEntities() {
   for (auto it = liveBullets.begin(); it != liveBullets.end(); /* no increment here */) {
       if (!(*it)->live) {
           delete *it; // delete the Bullet object
           it = liveBullets.erase(it); // erase returns the new iterator
+      } else { ++it; /* only increment if we didn't erase */ }
+  }
+
+  for (auto it = liveAsteroids.begin(); it != liveAsteroids.end(); /* no increment here */) {
+      if (!(*it)->live) {
+          delete *it; // delete the Bullet object
+          it = liveAsteroids.erase(it); // erase returns the new iterator
       } else { ++it; /* only increment if we didn't erase */ }
   }
 }

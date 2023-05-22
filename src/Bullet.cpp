@@ -1,5 +1,5 @@
 #include <Bullet.h>
-
+#include <Asteroid.h>
 Bullet::Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame)
   : live(true), xPos(deltaX), yPos(deltaY), rotation(shipRotation), game(curGame), bulletTexture(), bulletSprite(), velocity() {
   if (!bulletTexture.loadFromFile("textures/bullet.png")) { }
@@ -19,4 +19,15 @@ void Bullet::fire(float deltaTime) {
   sf::FloatRect bulletSpriteBounds = bulletSprite.getLocalBounds();
   if (bulletPos.x < 0 || bulletPos.x + bulletSpriteBounds.width > game.RESWIDTH) { live = false; }
   if (bulletPos.y < 0 || bulletPos.y + bulletSpriteBounds.height > game.RESHEIGHT) { live = false; }
+}
+
+void Bullet::checkCollision(std::vector<Asteroid*> liveAsteroids) { 
+  sf::FloatRect bulletBounds = bulletSprite.getGlobalBounds();
+  for (Asteroid* asteroid : liveAsteroids) {
+    sf::FloatRect asteroidBounds = asteroid->asteroidSprite.getGlobalBounds();
+    if (bulletBounds.intersects(asteroidBounds)) {
+      live = false;
+      asteroid->live = false; 
+    }
+  }
 }

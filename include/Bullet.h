@@ -17,7 +17,7 @@ class Bullet {
     sf::Sprite bulletSprite; 
 
     Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame);
-    // Start the movement of the bullet
     void fire(float deltaTime);
+    void checkCollision(std::vector<Asteroid*> liveAsteroids);
 };
 #endif //BULLET_H

@@ -2,7 +2,8 @@
 int RESWIDTH = static_cast<int>(Game::RESWIDTH);
 int RESHEIGHT = static_cast<int>(Game::RESHEIGHT);
 
-Asteroid::Asteroid() {
+Asteroid::Asteroid() 
+  : live(true) {
   setPositionAndVelocity();
 
   if (!asteroidTexture.loadFromFile("textures/BigAsteroid.png")) { }

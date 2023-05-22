@@ -37,6 +37,6 @@ class Game {
     void start();
     void stop(); 
 
-    void cleanLiveBullets(); 
+    void cleanEntities(); 
 };
 #endif //GAME_H
