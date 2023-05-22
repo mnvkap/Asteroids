@@ -9,15 +9,14 @@ Asteroid::Asteroid() {
   asteroidSprite.setTexture(asteroidTexture);
   asteroidSprite.setScale(Game::RESWIDTH * 0.2f / asteroidTexture.getSize().x, Game::RESHEIGHT * 0.2f / asteroidTexture.getSize().y);
   asteroidSprite.setPosition(xPos, yPos);
-  sf::FloatRect bounds = asteroidSprite.getGlobalBounds();
 }
 
 void Asteroid::setPositionAndVelocity() {
   std::random_device rd; // Create a random number engine
   std::mt19937 gen(rd()); // Mersenne Twister engine
   std::uniform_int_distribution<int> edgeGen(0, 3); // Create a distribution
-  std::uniform_real_distribution<float> randOne(-0.02, 0.01); // Random float between -0.2 - 0.2
-  std::uniform_real_distribution<float> randTwo(0.02, 0.03); // Random float between 0.2 - 0.8
+  std::uniform_real_distribution<float> randOne(-0.01, 0.01); // Random float between -0.2 - 0.2
+  std::uniform_real_distribution<float> randTwo(0.01, 0.02); // Random float between 0.2 - 0.8
   int edge = edgeGen(gen); // randomly select one of the four edges 
   switch(edge) {
     case 0: // top
@@ -44,18 +43,24 @@ void Asteroid::setPositionAndVelocity() {
       dx = randTwo(gen);
       dy = randOne(gen);
       break;
+  }
 }
-}
+
 void Asteroid::update() {
   xPos += dx;
   yPos += dy;
+  
+  // get the width and height of the sprite
+  float spriteWidth = asteroidSprite.getGlobalBounds().width;
+  float spriteHeight = asteroidSprite.getGlobalBounds().height;
+
   // Check X boundaries
-  if (xPos < -bounds.width) { xPos = Game::RESWIDTH + bounds.width; }
-  else if (xPos > bounds.width + Game::RESWIDTH) { xPos = -bounds.width; }
+  if (xPos < -spriteWidth) { xPos = Game::RESWIDTH; }
+  else if (xPos > Game::RESWIDTH) { xPos = -spriteWidth; }
 
   // Check Y boundaries
-  if (yPos < -bounds.height) { yPos = Game::RESHEIGHT + bounds.height; } 
-  else if (yPos > bounds.height + Game::RESHEIGHT) { yPos = -bounds.height; }
+  if (yPos < -spriteHeight) { yPos = Game::RESHEIGHT; } 
+  else if (yPos > Game::RESHEIGHT) { yPos = -spriteHeight; }
 
   asteroidSprite.setPosition(xPos, yPos);
 }

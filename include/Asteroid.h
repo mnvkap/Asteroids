@@ -9,7 +9,6 @@ class Asteroid {
     float xPos, yPos;
     float dx, dy;
     sf::Texture asteroidTexture;
-    sf::FloatRect bounds;
 
   public:
     int size;
