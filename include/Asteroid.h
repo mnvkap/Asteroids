@@ -18,7 +18,8 @@ class Asteroid {
 
     Asteroid(int size);
     void setPositionAndVelocity();
-    void update();
+    void update(std::vector<Asteroid*>& liveAsteroids);
+    void checkCollision(std::vector<Asteroid*>& liveAsteroids); 
     static std::vector<Asteroid*> breakApart(Asteroid* asteroid); 
 };
 #endif //ASTEROID_H

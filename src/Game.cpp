@@ -18,7 +18,7 @@ void Game::start() {
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)){
-      if (event.type == sf::Event::Closed) { return; }
+      if (event.type == sf::Event::Closed) { exit(0); }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
         Bullet* newBullet = ship->shoot(); 
         liveBullets.push_back(newBullet); 
@@ -36,7 +36,7 @@ void Game::start() {
       for (int i = 0; i < 5; i++) { liveAsteroids.push_back(new Asteroid(4)); }
     }
     for (Asteroid* asteroid : liveAsteroids) { // Update and draw each asteroid
-        asteroid->update();
+        asteroid->update(liveAsteroids);
         window.draw(asteroid->asteroidSprite); // Draws the asteroid using the sprite
     }
 
@@ -107,7 +107,7 @@ void Game::endGame() {
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) { return; }
+      if (event.type == sf::Event::Closed) { exit(0); }
       else if (event.type == sf::Event::KeyPressed) { restartGame(); }
     }
 
@@ -138,7 +138,7 @@ void Game::run() {
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) { return; }
+      if (event.type == sf::Event::Closed) { exit(0); }
       else if (event.type == sf::Event::KeyPressed) { start(); }
     }
 

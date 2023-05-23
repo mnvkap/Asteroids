@@ -67,7 +67,7 @@ void Asteroid::setPositionAndVelocity() {
   }
 }
 
-void Asteroid::update() {
+void Asteroid::update(std::vector<Asteroid*>& liveAsteroids) {
   xPos += dx;
   yPos += dy;
   
@@ -84,6 +84,7 @@ void Asteroid::update() {
   else if (yPos > Game::RESHEIGHT) { yPos = -spriteHeight; }
 
   asteroidSprite.setPosition(xPos, yPos);
+  
 }
 
 std::vector<Asteroid*> Asteroid::breakApart(Asteroid* asteroid) {
@@ -109,4 +110,27 @@ std::vector<Asteroid*> Asteroid::breakApart(Asteroid* asteroid) {
   newAsteroids.push_back(newAsteroidOne);
   newAsteroids.push_back(newAsteroidTwo);
   return newAsteroids; 
+}
+
+void Asteroid::checkCollision(std::vector<Asteroid*>& liveAsteroids) {
+  sf::FloatRect objectBounds = asteroidSprite.getGlobalBounds();
+
+  for (size_t i = 0; i < liveAsteroids.size(); ++i) {
+    for (size_t j = i + 1; j < liveAsteroids.size(); ++j) {
+      sf::FloatRect asteroidBounds = liveAsteroids[j]->asteroidSprite.getGlobalBounds();
+      if (objectBounds.intersects(asteroidBounds)) {
+        std::vector<Asteroid*> brokenAsteroids = Asteroid::breakApart(this); // Break apart object
+        std::vector<Asteroid*> brokenAsteroidsTwo = Asteroid::breakApart(liveAsteroids[j]); // Break apart colliding object
+        brokenAsteroids.insert(brokenAsteroids.end(), brokenAsteroidsTwo.begin(), brokenAsteroidsTwo.end());
+
+        // Add broken asteroids to the live asteroids list
+        liveAsteroids.insert(liveAsteroids.end(), brokenAsteroids.begin(), brokenAsteroids.end());
+
+        // Remove collided asteroids
+        liveAsteroids.erase(liveAsteroids.begin() + j);
+        liveAsteroids.erase(liveAsteroids.begin() + i);
+      }
+    }
+  }
+  live = false; // Kill the current asteroid
 }

@@ -115,18 +115,19 @@ Bullet* Ship::shoot() {
 
 void Ship::checkCollision(std::vector<Asteroid*>& liveAsteroids) {
   sf::Vector2f shipPosition = shipSprite.getPosition();
-  float shipRadius = shipSprite.getGlobalBounds().width / 2.0f; 
+  float shipRadius = shipSprite.getGlobalBounds().width / 3.0f;
 
   for (Asteroid* asteroid : liveAsteroids) {
     sf::Vector2f asteroidPosition = asteroid->asteroidSprite.getPosition();
-    float asteroidRadius = asteroid->asteroidSprite.getGlobalBounds().width / 2.0f;
+    float asteroidRadius = asteroid->asteroidSprite.getGlobalBounds().width / 3.0f;
 
     float dx = shipPosition.x - asteroidPosition.x;
     float dy = shipPosition.y - asteroidPosition.y;
     float distance = std::sqrt(dx * dx + dy * dy);
 
-    if (distance < shipRadius + asteroidRadius) { 
-      game.endGame(); 
+    if (distance < shipRadius + asteroidRadius) {
+      // Collision detected between the ship and the asteroid
+      game.endGame();
     }
   }
 }
