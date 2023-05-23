@@ -43,7 +43,7 @@ class Ship {
     void update(float deltaTime);
     void draw(sf::RenderWindow& window);
     Bullet* shoot(); // Returns Bullet it fires
-    void takeDamage();
+    void checkCollision(std::vector<Asteroid*>& liveAsteroids); 
     void boost();
 };
 #endif //SHIP_H

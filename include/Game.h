@@ -16,7 +16,9 @@ class Game {
     int wave;
     Ship* ship;
 
-    sf::Clock clock;
+    sf::Clock clock;    
+    sf::Clock asteroidSpawnTimer;
+    sf::Time timeToNextSpawn;
     sf::Font asteroidFont; 
     sf::Font pressKeyFont;
     sf::Sprite background;
@@ -33,10 +35,13 @@ class Game {
 
     Game();
     
-    void run(); // Displays title screen
+    void run(); 
     void start();
+    void endGame(); 
     void stop(); 
+    void restartGame();
 
     void cleanEntities(); 
+    void cleanGame();
 };
 #endif //GAME_H

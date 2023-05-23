@@ -1,5 +1,5 @@
-#include <Bullet.h>
-#include <Asteroid.h>
+#include "Bullet.h"
+#include "Asteroid.h"
 Bullet::Bullet(int deltaX, int deltaY, float shipRotation, Game& curGame)
   : live(true), xPos(deltaX), yPos(deltaY), rotation(shipRotation), game(curGame), bulletTexture(), bulletSprite(), velocity() {
   if (!bulletTexture.loadFromFile("textures/bullet.png")) { }

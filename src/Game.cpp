@@ -5,7 +5,7 @@
 
 
 Game::Game() 
-  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"), clock(), background() { 
+  : window(sf::VideoMode(RESWIDTH, RESHEIGHT), "Asteroids"), clock(), background(), asteroidSpawnTimer(), timeToNextSpawn(sf::seconds(2.f)) { 
   setUp();
 }
 
@@ -14,8 +14,7 @@ void Game::start() {
   window.clear(); 
   window.draw(background);
   window.display();
-  
-  sf::Clock spawnClock;
+
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)){
@@ -33,10 +32,9 @@ void Game::start() {
     window.draw(background);
     ship->draw(window);
 
-    if (liveAsteroids.empty()) {
+    if (liveAsteroids.empty() && asteroidSpawnTimer.getElapsedTime().asSeconds() >= timeToNextSpawn.asSeconds()) {
       for (int i = 0; i < 5; i++) { liveAsteroids.push_back(new Asteroid(4)); }
     }
-
     for (Asteroid* asteroid : liveAsteroids) { // Update and draw each asteroid
         asteroid->update();
         window.draw(asteroid->asteroidSprite); // Draws the asteroid using the sprite
@@ -45,7 +43,7 @@ void Game::start() {
     for (Bullet* bullet : liveBullets) { window.draw(bullet->bulletSprite); }
     window.display();
 
-    // Clean up liveBullets
+    ship->checkCollision(liveAsteroids); 
     cleanEntities();
   }
 }
@@ -62,7 +60,72 @@ void Game::cleanEntities() {
       if (!(*it)->live) {
           delete *it; // delete the Bullet object
           it = liveAsteroids.erase(it); // erase returns the new iterator
+      
+         // If we just deleted the last asteroid, reset the timer
+          if (liveAsteroids.empty()) {
+              asteroidSpawnTimer.restart();
+          }
       } else { ++it; /* only increment if we didn't erase */ }
+  }
+}
+
+void Game::endGame() {
+  // We start by clearing our text vector 
+  for(auto it = text.begin(); it != text.end(); ++it) { delete *it; }
+  text.clear();
+
+  // Now we write our new text
+  sf::Text* loseText = new sf::Text;
+  sf::Text* pressAnyKeyText = new sf::Text;
+
+  // Set Asteroids text
+  loseText->setString("YOU LOSE");
+  loseText->setFont(asteroidFont);
+  loseText->setCharacterSize((int)(.085 *(RESHEIGHT + RESWIDTH)));
+  loseText->setFillColor(sf::Color::White);
+  sf::FloatRect loseTextBounds = loseText->getLocalBounds(); // Used to calculate placement of text
+  loseText->setOrigin(loseTextBounds.left + loseTextBounds.width / 2.0f, loseTextBounds.top + loseTextBounds.height / 2.0f); // Set the origin to the center of the text
+  loseText->setPosition(RESWIDTH / 2.0f, 150);
+
+  // Set pressAnyKeyText
+  pressAnyKeyText->setString("PRESS ANY KEY TO PLAY AGAIN");
+  pressAnyKeyText->setFont(pressKeyFont);
+  pressAnyKeyText->setCharacterSize((int)(.04 *(RESHEIGHT + RESWIDTH)));
+  pressAnyKeyText->setFillColor(sf::Color::White);
+  sf::FloatRect pressAnyKeyTextBounds = pressAnyKeyText->getLocalBounds(); // Used to calculate placement of text
+  pressAnyKeyText->setOrigin(pressAnyKeyTextBounds.left + pressAnyKeyTextBounds.width / 2.0f, pressAnyKeyTextBounds.top + pressAnyKeyTextBounds.height / 2.0f); // Set the origin to the center of the text
+  pressAnyKeyText->setPosition(RESWIDTH / 2.0f, RESHEIGHT - 100);
+
+  // Store fonts in vector 
+  text.push_back(loseText);
+  text.push_back(pressAnyKeyText);
+
+  bool startGame = false; 
+  bool visible = true; // Used to blink press any key
+  float blinkInterval = 0.5f; 
+
+  while (window.isOpen()) {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) { return; }
+      else if (event.type == sf::Event::KeyPressed) { restartGame(); }
+    }
+
+    if (clock.getElapsedTime().asSeconds() >= blinkInterval) { // Check if we should blink text
+      visible = !visible; 
+      if (visible) { text.back()->setFillColor(sf::Color(255, 255, 255, 0)); } 
+      else { text.back()->setFillColor(sf::Color(255, 255, 255, 255)); }
+
+      // Update screen
+      window.clear(); 
+      window.draw(background);
+      ship->draw(window);
+      for (Asteroid* asteroid : liveAsteroids) { window.draw(asteroid->asteroidSprite); }
+      for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
+      window.display();
+      clock.restart(); // Restart the clock
+
+    }
   }
 }
 
@@ -76,7 +139,7 @@ void Game::run() {
     sf::Event event;
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) { return; }
-      else if (event.type == sf::Event::KeyPressed) { startGame = true; }
+      else if (event.type == sf::Event::KeyPressed) { start(); }
     }
 
     if (clock.getElapsedTime().asSeconds() >= blinkInterval) { // Check if we should blink text
@@ -92,10 +155,8 @@ void Game::run() {
       window.display();
       clock.restart(); // Restart the clock
 
-      if (startGame) { break; }
     }
   }
-  start();
 }
 
 // This method is used to set up the title screen, and set textures/fonts for gameplay
@@ -136,4 +197,18 @@ void Game::setUp() {
 
   // Create Ship 
   ship = new Ship(RESWIDTH/2, RESHEIGHT/2, *this);
+}
+
+void Game::restartGame() {
+  cleanEntities();
+  delete ship; 
+
+  for(auto it = text.begin(); it != text.end(); ++it) { delete *it; }
+  text.clear();
+
+  std::unique_ptr<Game> game = std::make_unique<Game>();
+  game->run(); 
+
+  game = std::make_unique<Game>();
+  game->run(); 
 }

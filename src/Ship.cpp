@@ -1,4 +1,6 @@
 #include "Ship.h"
+#include "Asteroid.h"
+
 #ifndef PI
 #define PI 3.14159265358979323846
 #endif
@@ -111,6 +113,20 @@ Bullet* Ship::shoot() {
   return bullet;
 }
 
-void Ship::takeDamage() {
-  health -= 33; 
+void Ship::checkCollision(std::vector<Asteroid*>& liveAsteroids) {
+  sf::Vector2f shipPosition = shipSprite.getPosition();
+  float shipRadius = shipSprite.getGlobalBounds().width / 2.0f; 
+
+  for (Asteroid* asteroid : liveAsteroids) {
+    sf::Vector2f asteroidPosition = asteroid->asteroidSprite.getPosition();
+    float asteroidRadius = asteroid->asteroidSprite.getGlobalBounds().width / 2.0f;
+
+    float dx = shipPosition.x - asteroidPosition.x;
+    float dy = shipPosition.y - asteroidPosition.y;
+    float distance = std::sqrt(dx * dx + dy * dy);
+
+    if (distance < shipRadius + asteroidRadius) { 
+      game.endGame(); 
+    }
+  }
 }
