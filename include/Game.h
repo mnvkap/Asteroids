@@ -21,13 +21,13 @@ class Game {
     sf::Time timeToNextSpawn;
     sf::Font asteroidFont; 
     sf::Font pressKeyFont;
+    sf::Text* scoreText; 
     sf::Sprite background;
     sf::Sprite* shipSprite;
     sf::Texture backgroundTexture;
     sf::RenderWindow window; // Window for game to be played in 
     std::vector<sf::Text*> text; // Vector to hold text
     std::vector<Bullet*> liveBullets; // Vector to hold bullets
-    void setUp(); // Used to setup game
   public:
     std::vector<Asteroid*> liveAsteroids; // Vector to hold asteroids
     static constexpr float RESHEIGHT = 1080;
@@ -37,8 +37,9 @@ class Game {
     
     void run(); 
     void start();
+    void setUp(); 
+    void updateScore(); 
     void endGame(); 
-    void stop(); 
     void restartGame();
 
     void cleanEntities(); 

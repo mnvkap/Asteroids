@@ -11,9 +11,12 @@ Game::Game()
 
 // This method contains the game loop
 void Game::start() {
+  score = 0; 
   window.clear(); 
   window.draw(background);
+  window.draw(*scoreText);
   window.display();
+  
 
   while (window.isOpen()) {
     sf::Event event;
@@ -25,11 +28,18 @@ void Game::start() {
       }
     }
     float deltaTime = clock.restart().asSeconds(); // Restart and get elapsed time
-    for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); bullet->checkCollision(liveAsteroids); }
+    for (Bullet* bullet : liveBullets) { bullet->fire(deltaTime); bullet->checkCollision(liveAsteroids, score); }
 
     ship->update(deltaTime);
     window.clear();
     window.draw(background);
+
+    scoreText->setString(std::to_string(score));
+    sf::FloatRect scoreTextBounds = scoreText->getLocalBounds(); // Used to recalculate placement of text
+    scoreText->setOrigin(scoreTextBounds.left + scoreTextBounds.width / 2.0f, scoreTextBounds.top + scoreTextBounds.height/2.0f); // Set the origin to the center of the text 
+    scoreText->setPosition(RESWIDTH / 2.0f, 150); 
+
+    window.draw(*scoreText);
     ship->draw(window);
 
     if (liveAsteroids.empty() && asteroidSpawnTimer.getElapsedTime().asSeconds() >= timeToNextSpawn.asSeconds()) {
@@ -78,6 +88,9 @@ void Game::endGame() {
   sf::Text* loseText = new sf::Text;
   sf::Text* pressAnyKeyText = new sf::Text;
 
+  // Set scoreText
+  scoreText->setPosition(RESWIDTH / 2.0f, RESHEIGHT / 2.0f); 
+
   // Set Asteroids text
   loseText->setString("YOU LOSE");
   loseText->setFont(asteroidFont);
@@ -122,6 +135,7 @@ void Game::endGame() {
       ship->draw(window);
       for (Asteroid* asteroid : liveAsteroids) { window.draw(asteroid->asteroidSprite); }
       for(auto textObj: text) { window.draw(*textObj); } // We draw our text objects on the screen
+      window.draw(*scoreText); 
       window.display();
       clock.restart(); // Restart the clock
 
@@ -168,6 +182,16 @@ void Game::setUp() {
   // Create text objects
   sf::Text* asteroidText = new sf::Text;
   sf::Text* pressAnyKeyText = new sf::Text;
+  scoreText = new sf::Text;
+
+  // Set up scoreText 
+  scoreText->setString(std::to_string(score));
+  scoreText->setFont(asteroidFont);
+  scoreText->setCharacterSize((int)(.025 *(RESHEIGHT + RESWIDTH)));
+  scoreText->setFillColor(sf::Color::White);
+  sf::FloatRect scoreTextBounds = scoreText->getLocalBounds(); // Used to calculate placement of text
+  scoreText->setOrigin(scoreTextBounds.left + scoreTextBounds.width / 2.0f, scoreTextBounds.top + scoreTextBounds.height/2.0f); // Set the origin to the center of the text 
+  scoreText->setPosition(RESWIDTH / 2.0f, 150); 
 
   // Set Asteroids text
   asteroidText->setString("ASTEROIDS");
@@ -212,3 +236,4 @@ void Game::restartGame() {
   game = std::make_unique<Game>();
   game->run(); 
 }
+
