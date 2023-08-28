@@ -1,7 +1,7 @@
 # Asteroids Game
 
 ![Game Screenshot](screenshot.png)
-![Game Screenshot](screenshot2.png)
+![Gameplay Screenshot](screenshot2.png)
 
 ## Description
 
